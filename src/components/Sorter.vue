@@ -2,7 +2,6 @@
   <div>
     <select id="algos" v-model="algo">
       <option>Bubble Sort</option>
-      <option>Quick Sort</option>
     </select>
     <button :disabled="isRunning" @click="sort(algo)">Sort !</button>
   </div>
