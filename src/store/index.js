@@ -52,7 +52,6 @@ export default createStore({
       return 1 / state.speed * 1000;
     },
     isRunning: state => {
-      console.log(state.isRunning);
       return state.isRunning;
     },
 
