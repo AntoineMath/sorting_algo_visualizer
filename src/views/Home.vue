@@ -1,18 +1,42 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+      <Sorter id="sorter" />
+      <ArraySizeSlider id="sorter" />
+      <SpeedSlider id="sorted" />
+    </div>
+    <BarChart />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import ArraySizeSlider from "@/components/ArraySizeSlider.vue";
+import SpeedSlider from "@/components/SpeedSlider.vue";
+import Sorter from "@/components/Sorter.vue";
+import BarChart from "@/components/BarChart.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    ArraySizeSlider,
+    SpeedSlider,
+    Sorter,
+    BarChart,
+  },
+};
 </script>
+
+<style lang="scss" scoped>
+.chart {
+  margin: 120px auto;
+  display: block;
+}
+
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+</style>
