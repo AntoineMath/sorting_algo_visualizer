@@ -33,7 +33,6 @@ export default createStore({
       return state.calls = 0;
     },
     isRunning(state, payload) {
-      console.log(payload);
       return state.isRunning = payload;
     }
   },
