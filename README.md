@@ -1,4 +1,5 @@
 # sorting-visualizer
+A simple and effective way of visualizing sorting algorithms (adding new algo soon)
 
 ## Project setup
 ```
