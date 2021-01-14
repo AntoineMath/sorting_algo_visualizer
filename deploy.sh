@@ -15,6 +15,7 @@ cd dist
 git init
 git add -A
 git commit -m 'deploy'
+git status
 
 git push -f git@github.com:antoinemath/sorting_algo_visualizer.git main:gh-pages
 
