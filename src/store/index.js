@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     array: Array.from({ length: 50 }, () => Math.round(Math.random() * 100)),
-    colors: Array.from({ length: 50 }, () => "pink"),
+    colors: Array.from({ length: 50 }, () => "dimgrey"),
     speed: 50,
     calls: 0,
     isRunning: false,
@@ -12,7 +12,7 @@ export default createStore({
   mutations: {
     create_random_array(state, payload) {
       state.array = Array.from({ length: payload }, () => Math.round(Math.random() * 100));
-      state.colors = Array.from({ length: payload }, () => "pink");
+      state.colors = Array.from({ length: payload }, () => "dimgrey");
     },
 
     update_array(state, payload) {
@@ -31,6 +31,9 @@ export default createStore({
     },
     reset_calls(state) {
       return state.calls = 0;
+    },
+    reset_colors(state) {
+      return state.colors = Array.from({ length: state.array.length }, () => "dimgrey");
     },
     isRunning(state, payload) {
       return state.isRunning = payload;
