@@ -26,7 +26,6 @@ export default {
       return store.getters.speed;
     },
     isRunning() {
-      //console.log(store.getters.isRunning);
       return store.getters.isRunning;
     },
   },
@@ -45,36 +44,40 @@ export default {
         this.quickSort();
       }
     },
-
     async bubbleSort() {
       store.commit("reset_calls");
       let a = this.array;
       let sorted = false;
+
       while (!sorted) {
         sorted = true;
         for (let i = 0; i < a.length - 1; i++) {
           store.commit("increment_calls");
-          if (i > 0) {
-            store.commit("update_colors", { pos: i - 1, color: "pink" });
-          }
-          store.commit("update_colors", { pos: i, color: "red" });
-          store.commit("update_colors", { pos: i + 1, color: "red" });
+
+          // compare
+          store.commit("update_colors", { pos: i, color: "black" });
+          store.commit("update_colors", { pos: i + 1, color: "black" });
+          await this.sleep(this.speed);
+
           if (a[i] > a[i + 1]) {
-            await this.sleep(this.speed);
-            store.commit("update_colors", { pos: i, color: "green" });
-            await this.sleep(this.speed);
-            [a[i], a[i + 1]] = [a[i + 1], a[i]];
-            store.commit("update_colors", { pos: i + 1, color: "green" });
             store.commit("update_colors", { pos: i, color: "red" });
             await this.sleep(this.speed);
-            store.commit("update_array", a);
-            //console.log(a);
+
+            // swap
+            [a[i], a[i + 1]] = [a[i + 1], a[i]];
+            store.commit("update_colors", { pos: i + 1, color: "red" });
+            store.commit("update_colors", { pos: i, color: "black" });
+            await this.sleep(this.speed);
             sorted = false;
           }
+          store.commit("update_colors", { pos: i, color: "dimgrey" });
         }
+        // reset colors after a full array path
+        store.commit("reset_colors");
       }
       store.commit("isRunning", false);
     },
+
     quickSort() {
       console.log("quicksort");
     },
