@@ -28,6 +28,9 @@ export default {
     isRunning() {
       return store.getters.isRunning;
     },
+    palette() {
+      return store.state.palette;
+    },
   },
 
   methods: {
@@ -55,22 +58,40 @@ export default {
           store.commit("increment_calls");
 
           // compare
-          store.commit("update_colors", { pos: i, color: "black" });
-          store.commit("update_colors", { pos: i + 1, color: "black" });
+          store.commit("update_colors", {
+            pos: i,
+            color: this.palette["compare"],
+          });
+          store.commit("update_colors", {
+            pos: i + 1,
+            color: this.palette["compare"],
+          });
           await this.sleep(this.speed);
 
           if (a[i] > a[i + 1]) {
-            store.commit("update_colors", { pos: i, color: "red" });
+            store.commit("update_colors", {
+              pos: i,
+              color: this.palette["selected"],
+            });
             await this.sleep(this.speed);
 
             // swap
             [a[i], a[i + 1]] = [a[i + 1], a[i]];
-            store.commit("update_colors", { pos: i + 1, color: "red" });
-            store.commit("update_colors", { pos: i, color: "black" });
+            store.commit("update_colors", {
+              pos: i + 1,
+              color: this.palette["selected"],
+            });
+            store.commit("update_colors", {
+              pos: i,
+              color: this.palette["compare"],
+            });
             await this.sleep(this.speed);
             sorted = false;
           }
-          store.commit("update_colors", { pos: i, color: "dimgrey" });
+          store.commit("update_colors", {
+            pos: i,
+            color: this.palette["background"],
+          });
         }
         // reset colors after a full array path
         store.commit("reset_colors");
