@@ -8,7 +8,7 @@
       max="100"
       v-model="rangeSlider"
     />
-    <span>{{ array_size }}</span>
+    <span>{{ bars_size }}</span>
   </div>
 </template>
 
@@ -19,17 +19,17 @@ export default {
   store: store,
   data() {
     return {
-      rangeSlider: this.array_size,
+      rangeSlider: this.bars_size,
     };
   },
   computed: {
+    bars_size() {
+      return store.getters.bars_size;
+    },
     update_array(event) {
       return store.commit("create_random_array", event.target.value);
     },
 
-    array_size() {
-      return store.getters.array_size;
-    },
     isRunning() {
       return store.getters.isRunning;
     },

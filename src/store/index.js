@@ -6,10 +6,21 @@ import { createStore } from 'vuex'
 //const palette = { "background": "silver", "compare": "dimgray", "selected": "red" };
 const palette = { "background": "gray", "compare": "limegreen", "selected": "red" };
 
+
 export default createStore({
   state: {
-    array: Array.from({ length: 50 }, () => Math.round(Math.random() * 100)),
-    colors: Array.from({ length: 50 }, () => palette["background"]),
+    bars: Array.from({ length: 50 }, () => Math.round(Math.random() * 100)).map((x, i) => {
+      return {
+        value: x,
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0,
+        color: palette["background"],
+        index: i
+      }
+    }
+    ),
     speed: 50,
     calls: 0,
     palette: palette,
@@ -18,14 +29,21 @@ export default createStore({
 
   mutations: {
     create_random_array(state, payload) {
-      state.array = Array.from({ length: payload }, () => Math.round(Math.random() * 100));
-      state.colors = Array.from({ length: payload }, () => palette["background"]);
+      state.bars = Array.from({ length: payload }, () => Math.round(Math.random() * 100)).map((x, i) => {
+        return {
+          value: x,
+          x: 0,
+          y: 0,
+          height: 0,
+          width: 0,
+          color: palette["background"],
+          index: i
+        }
+      })
     },
-
-    update_array(state, payload) {
-      state.array = payload;
+    set_bars: (state, payload) => {
+      state.bars = payload
     },
-
     update_colors(state, { pos, color }) {
       state.colors[pos] = color;
     },
@@ -40,19 +58,52 @@ export default createStore({
       return state.calls = 0;
     },
     reset_colors(state) {
-      return state.colors = Array.from({ length: state.array.length }, () => state.palette["background"]);
+      state.bars.forEach(bar => {
+        bar.color = palette["background"]
+      })
     },
     isRunning(state, payload) {
       return state.isRunning = payload;
-    }
+    },
+    set_height: (state, payload) => {
+      const { i, height } = payload
+      state.bars[i].height = height
+    },
+    set_width: (state, payload) => {
+      const { i, width } = payload
+      state.bars[i].width = width
+    },
+    set_x: (state, payload) => {
+      const { i, x_pos } = payload
+      state.bars[i].x = x_pos
+    },
+    set_y: (state, payload) => {
+      const { i, y_pos } = payload
+      state.bars[i].y = y_pos
+    },
+    set_color: (state, payload) => {
+      const { i, color } = payload
+      state.bars[i].color = color
+    },
+    set_index: (state, payload) => {
+      const { i, index } = payload
+      state.bars[i].index = index
+    },
+    set_value: (state, payload) => {
+      const { i, value } = payload
+      state.bars[i].value = value
+    },
   },
 
   getters: {
-    array_size: state => {
-      return state.array.length;
+    bars: state => {
+      return state.bars;
     },
-    array: state => {
-      return state.array;
+    bars_size: state => {
+      return state.bars.length;
+    },
+    bars_values: state => {
+      return state.bars.map(bar => bar.value);
     },
     colors: state => {
       return state.colors;

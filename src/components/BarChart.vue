@@ -1,11 +1,11 @@
 <template>
   <svg class="barchart" :width="window.width" :height="window.height">
-    <g class="bars" fill="none">
+    <g class="drawBars" fill="none">
       <rect
-        v-for="(bar, index) in bars"
-        v-bind:fill="colors[index]"
-        id="index"
-        :key="index"
+        v-for="bar in drawBars"
+        :fill="bar.color"
+        id="bar.index"
+        :key="bar.index"
         :height="bar.height"
         :width="bar.width"
         :x="bar.x"
@@ -34,6 +34,9 @@ export default {
     };
   },
   computed: {
+    bars() {
+      return store.getters.bars;
+    },
     array() {
       return store.getters.array;
     },
@@ -45,25 +48,31 @@ export default {
     },
 
     y() {
-      let values = this.array;
+      let values = this.bars.map((bar) => bar.value);
       return scaleLinear()
         .range([this.window.height, 0])
         .domain([0, Math.max(...values)]);
     },
-    bars() {
+
+    drawBars() {
+      let bars = this.bars;
       let bar_width =
         this.window.width /
-        (this.space * (this.array_size - 1) + this.array_size);
-      let bars = this.array.map((d, i) => {
-        return {
-          x: i * bar_width * (1 + this.space),
-          y: this.y(d),
-          width: bar_width,
-          height: this.window.height - this.y(d),
-          //color: store.state.colors[i],
-        };
+        (this.space * (this.bars.length - 1) + this.bars.length);
+
+      bars.forEach((bar, i) => {
+        this.$store.commit("set_x", {
+          i: i,
+          x_pos: i * bar_width * (1 + this.space),
+        });
+        this.$store.commit("set_y", { i: i, y_pos: this.y(bar.value) });
+        this.$store.commit("set_height", {
+          i: i,
+          height: this.window.height - this.y(bar.value),
+        });
+        this.$store.commit("set_width", { i: i, width: bar_width });
       });
-      return bars;
+      return this.bars;
     },
     calls() {
       return store.getters.calls;
@@ -80,10 +89,6 @@ export default {
   },
 
   methods: {
-    update_bar(id) {
-      this.bar[id].height = this.window.height - this.y(this.array[id]);
-      this.bar[id].color = this.colors[id];
-    },
     handleResize() {
       this.window.width = window.innerWidth * 0.8;
       this.window.height = window.innerHeight * 0.5;
