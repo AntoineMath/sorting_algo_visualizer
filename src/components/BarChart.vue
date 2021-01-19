@@ -4,7 +4,7 @@
       <rect
         v-for="bar in drawBars"
         :fill="bar.color"
-        id="bar.index"
+        :id="bar.index"
         :key="bar.index"
         :height="bar.height"
         :width="bar.width"
