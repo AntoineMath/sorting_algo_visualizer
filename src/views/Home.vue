@@ -5,7 +5,7 @@
       <ArraySizeSlider id="sorter" />
       <SpeedSlider id="sorted" />
     </div>
-    <BarChart />
+    <Chart />
   </div>
 </template>
 
@@ -14,7 +14,7 @@
 import ArraySizeSlider from "@/components/ArraySizeSlider.vue";
 import SpeedSlider from "@/components/SpeedSlider.vue";
 import Sorter from "@/components/Sorter.vue";
-import BarChart from "@/components/BarChart.vue";
+import Chart from "@/components/Chart.vue";
 
 export default {
   name: "Home",
@@ -22,7 +22,7 @@ export default {
     ArraySizeSlider,
     SpeedSlider,
     Sorter,
-    BarChart,
+    Chart,
   },
 };
 </script>

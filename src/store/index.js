@@ -17,14 +17,14 @@ export default createStore({
         height: 0,
         width: 0,
         color: palette["background"],
-        index: i
+        index: i,
+        transform: ""
       }
     }
     ),
     speed: 50,
     calls: 0,
-    palette: palette,
-    isRunning: false,
+    colors: palette,
   },
 
   mutations: {
@@ -37,12 +37,17 @@ export default createStore({
           height: 0,
           width: 0,
           color: palette["background"],
-          index: i
+          index: i,
+          transform: 0,
         }
       })
     },
     set_bars: (state, payload) => {
       state.bars = payload
+    },
+    swap_bars: (state, payload) => {
+      const { pos1, pos2 } = payload;
+      [state.bars[pos1], state.bars[pos2]] = [state.bars[pos2], state.bars[pos1]]
     },
     update_colors(state, { pos, color }) {
       state.colors[pos] = color;
@@ -61,9 +66,6 @@ export default createStore({
       state.bars.forEach(bar => {
         bar.color = palette["background"]
       })
-    },
-    isRunning(state, payload) {
-      return state.isRunning = payload;
     },
     set_height: (state, payload) => {
       const { i, height } = payload
@@ -93,6 +95,10 @@ export default createStore({
       const { i, value } = payload
       state.bars[i].value = value
     },
+    set_transform: (state, payload) => {
+      const { pos, transform } = payload
+      state.bars[pos].transform = transform
+    },
   },
 
   getters: {
@@ -118,6 +124,6 @@ export default createStore({
 
     calls: state => {
       return state.calls;
-    }
+    },
   },
 })

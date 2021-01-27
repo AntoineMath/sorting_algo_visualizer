@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       algo: "Bubble Sort",
+      isRunning: false,
     };
   },
   computed: {
@@ -25,11 +26,11 @@ export default {
     speed() {
       return store.getters.speed;
     },
-    isRunning() {
-      return store.getters.isRunning;
-    },
     palette() {
       return store.state.palette;
+    },
+    colors() {
+      return store.getters.colors;
     },
   },
 
@@ -37,106 +38,68 @@ export default {
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-
     sort(algo) {
-      store.commit("isRunning", true);
-      let bars = this.bars;
+      this.isRunning = true;
       if (algo == "Bubble Sort") {
-        this.bubbleSort(bars);
+        // store the sequences of animations
+        var animations = this.bubbleSort();
       }
-      if (algo == "Merge Sort") {
-        store.commit("set_bars", this.mergeSort(bars));
-      }
+      // animate
+      this.animate(animations);
     },
-    async bubbleSort(bars) {
-      store.commit("reset_calls");
+
+    bubbleSort() {
+      let array = [...this.bars].map((bar) => bar.value);
+      let animations = [];
       let sorted = false;
 
       while (!sorted) {
         sorted = true;
-        for (let i = 0; i < bars.length - 1; i++) {
-          store.commit("increment_calls");
-
-          // compare
-          store.commit("set_color", {
-            i: i,
-            color: this.palette["compare"],
-          });
-          store.commit("set_color", {
-            i: i + 1,
-            color: this.palette["compare"],
-          });
-          await this.sleep(this.speed);
-
-          if (bars[i].value > bars[i + 1].value) {
-            store.commit("set_color", {
-              i: i,
-              color: this.palette["selected"],
+        for (let i = 0; i < array.length - 1; i++) {
+          if (array[i] > array[i + 1]) {
+            animations.push({
+              type: "swap",
+              pos: [i, i + 1],
             });
-            await this.sleep(this.speed);
 
             // swap
-            [bars[i].value, bars[i + 1].value] = [
-              bars[i + 1].value,
-              bars[i].value,
-            ];
-            store.commit("set_color", {
-              i: i + 1,
-              color: this.palette["selected"],
-            });
-            store.commit("set_color", {
-              i: i,
-              color: this.palette["compare"],
-            });
-            await this.sleep(this.speed);
+            [array[i], array[i + 1]] = [array[i + 1], array[i]];
             sorted = false;
+          } else {
+            animations.push({ type: "compare", pos: [i, i + 1] });
           }
-          store.commit("set_color", {
-            i: i,
-            color: this.palette["background"],
-          });
         }
-        // reset color after a full array path
-        store.commit("reset_colors");
       }
-      store.commit("isRunning", false);
+      return animations;
     },
 
-    //mergeSort(bars) {
-    //  let arr = [...bars];
-    //  if (arr.length == 1) {
-    //    return arr;
-    //  }
-    //  let array_one = arr.slice(0, Math.floor(arr.length / 2));
-    //  let array_two = arr.slice(array_one.length);
+    async animate(animations) {
+      let bars = this.bars;
+      store.commit("reset_calls");
+      for (let i = 0; i < animations.length; i++) {
+        let a = animations[i];
+        let [pos1, pos2] = a.pos;
+        store.commit("increment_calls");
+        store.commit("reset_colors");
 
-    //  array_one = this.mergeSort(array_one);
-    //  array_two = this.mergeSort(array_two);
-
-    //  return this.merge(array_one, array_two);
-    //},
-    //merge(array_a, array_b) {
-    //  let array_c = [];
-
-    //  while (array_a.length && array_b.length) {
-    //    if (array_a[0].value > array_b[0].value) {
-    //      array_c.push(array_b[0]);
-    //      array_b.shift();
-    //    } else {
-    //      array_c.push(array_a[0]);
-    //      array_a.shift();
-    //    }
-    //  }
-    //  while (array_a.length) {
-    //    array_c.push(array_a[0]);
-    //    array_a.shift();
-    //  }
-    //  while (array_b.length) {
-    //    array_c.push(array_b[0]);
-    //    array_b.shift();
-    //  }
-    //  return array_c;
-    //},
+        if (a.type == "swap") {
+          bars[pos1].color = this.colors["selected"];
+          bars[pos2].color = this.colors["selected"];
+          await this.sleep(this.speed);
+          [bars[pos1], bars[pos2]] = [bars[pos2], bars[pos1]];
+          bars[pos1].color = this.colors["compare"];
+          bars[pos2].color = this.colors["compare"];
+          store.commit("set_bars", bars);
+          await this.sleep(this.speed);
+        } else if (a.type == "compare") {
+          bars[pos1].color = this.colors["compare"];
+          bars[pos2].color = this.colors["compare"];
+          await this.sleep(this.speed);
+        }
+      }
+      store.commit("reset_colors");
+      this.isRunning = false;
+    },
   },
 };
 </script>

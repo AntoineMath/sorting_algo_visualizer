@@ -1,16 +1,17 @@
 <template>
-  <svg class="barchart" :width="window.width" :height="window.height">
-    <g class="drawBars" fill="none">
-      <rect
-        v-for="bar in drawBars"
-        :fill="bar.color"
-        :id="bar.index"
-        :key="bar.index"
-        :height="bar.height"
-        :width="bar.width"
-        :x="bar.x"
-        :y="bar.y"
-      ></rect>
+  <svg class="chart" :width="window.width" :height="window.height">
+    <g class="drawBars" v-for="bar in drawBars" :key="bar.index">
+      <g class="bar.index" fill="none">
+        <rect
+          :fill="bar.color"
+          :id="bar.index"
+          :key="bar.index"
+          :height="bar.height"
+          :width="bar.width"
+          :x="bar.x"
+          :y="bar.y"
+        ></rect>
+      </g>
     </g>
   </svg>
   <p>Calls : {{ calls }}</p>
@@ -20,7 +21,7 @@
 import { scaleLinear } from "d3-scale";
 import store from "@/store";
 export default {
-  name: "BarChart",
+  name: "Chart",
   store: store,
   data() {
     return {
@@ -37,23 +38,12 @@ export default {
     bars() {
       return store.getters.bars;
     },
-    array() {
-      return store.getters.array;
-    },
-    array_size() {
-      return store.getters.array_size;
-    },
-    colors() {
-      return store.getters.colors;
-    },
-
     y() {
       let values = this.bars.map((bar) => bar.value);
       return scaleLinear()
         .range([this.window.height, 0])
         .domain([0, Math.max(...values)]);
     },
-
     drawBars() {
       let bars = this.bars;
       let bar_width =
@@ -72,7 +62,7 @@ export default {
         });
         this.$store.commit("set_width", { i: i, width: bar_width });
       });
-      return this.bars;
+      return bars;
     },
     calls() {
       return store.getters.calls;
